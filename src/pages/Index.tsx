@@ -1,13 +1,78 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import React, { useState } from 'react';
+import { AuthProvider, useAuth } from '@/contexts/AuthContext';
+import LoginPage from '@/components/LoginPage';
+import EmployeeList from '@/components/EmployeeList';
+import EmployeeForm from '@/components/EmployeeForm';
+import { Employee } from '@/types/Employee';
+
+type AppState = 'login' | 'list' | 'add' | 'edit';
+
+const AppContent = () => {
+  const [currentState, setCurrentState] = useState<AppState>('login');
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | undefined>();
+  const { isAuthenticated } = useAuth();
+
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      setCurrentState('list');
+    } else {
+      setCurrentState('login');
+    }
+  }, [isAuthenticated]);
+
+  const handleLogin = () => {
+    setCurrentState('list');
+  };
+
+  const handleAddEmployee = () => {
+    setSelectedEmployee(undefined);
+    setCurrentState('add');
+  };
+
+  const handleEditEmployee = (employee: Employee) => {
+    setSelectedEmployee(employee);
+    setCurrentState('edit');
+  };
+
+  const handleSaveEmployee = () => {
+    setCurrentState('list');
+  };
+
+  const handleCancel = () => {
+    setCurrentState('list');
+  };
+
+  if (!isAuthenticated || currentState === 'login') {
+    return <LoginPage onLogin={handleLogin} />;
+  }
+
+  switch (currentState) {
+    case 'list':
+      return (
+        <EmployeeList
+          onAddEmployee={handleAddEmployee}
+          onEditEmployee={handleEditEmployee}
+        />
+      );
+    case 'add':
+    case 'edit':
+      return (
+        <EmployeeForm
+          employee={selectedEmployee}
+          onSave={handleSaveEmployee}
+          onCancel={handleCancel}
+        />
+      );
+    default:
+      return null;
+  }
+};
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
-    </div>
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 };
 
