@@ -31,6 +31,282 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
+// Move layout components outside to prevent re-creation
+const BasicLayout: React.FC<{
+  formData: EmployeeFormData;
+  onInputChange: (field: keyof EmployeeFormData, value: string | number) => void;
+}> = ({ formData, onInputChange }) => (
+  <div className="space-y-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="space-y-2">
+        <Label htmlFor="name">Full Name *</Label>
+        <div className="relative">
+          <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+          <Input
+            id="name"
+            value={formData.name}
+            onChange={(e) => onInputChange('name', e.target.value)}
+            className="pl-9 shadow-card focus:shadow-soft transition-all duration-200"
+            placeholder="Enter full name"
+            required
+          />
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="employeeCode">Employee Code *</Label>
+        <Input
+          id="employeeCode"
+          value={formData.employeeCode}
+          onChange={(e) => onInputChange('employeeCode', e.target.value)}
+          className="shadow-card focus:shadow-soft transition-all duration-200 font-mono"
+          placeholder="EMP001"
+          required
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="dateOfJoining">Date of Joining *</Label>
+        <div className="relative">
+          <Calendar className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+          <Input
+            id="dateOfJoining"
+            type="date"
+            value={formData.dateOfJoining}
+            onChange={(e) => onInputChange('dateOfJoining', e.target.value)}
+            className="pl-9 shadow-card focus:shadow-soft transition-all duration-200"
+            required
+          />
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="mobileNumber">Mobile Number *</Label>
+        <div className="relative">
+          <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+          <Input
+            id="mobileNumber"
+            value={formData.mobileNumber}
+            onChange={(e) => onInputChange('mobileNumber', e.target.value)}
+            className="pl-9 shadow-card focus:shadow-soft transition-all duration-200"
+            placeholder="+1-555-0123"
+            required
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+const AdvancedLayout: React.FC<{
+  formData: EmployeeFormData;
+  onInputChange: (field: keyof EmployeeFormData, value: string | number) => void;
+  departments: string[];
+  bloodGroups: string[];
+  maritalStatuses: string[];
+}> = ({ formData, onInputChange, departments, bloodGroups, maritalStatuses }) => (
+  <Tabs defaultValue="personal" className="space-y-6">
+    <TabsList className="grid w-full grid-cols-3">
+      <TabsTrigger value="personal">Personal Info</TabsTrigger>
+      <TabsTrigger value="professional">Professional</TabsTrigger>
+      <TabsTrigger value="additional">Additional</TabsTrigger>
+    </TabsList>
+
+    <TabsContent value="personal" className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="name">Full Name *</Label>
+          <div className="relative">
+            <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+            <Input
+              id="name"
+              value={formData.name}
+              onChange={(e) => onInputChange('name', e.target.value)}
+              className="pl-9 shadow-card focus:shadow-soft transition-all duration-200"
+              placeholder="Enter full name"
+              required
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="email">Email Address</Label>
+          <div className="relative">
+            <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+            <Input
+              id="email"
+              type="email"
+              value={formData.email}
+              onChange={(e) => onInputChange('email', e.target.value)}
+              className="pl-9 shadow-card focus:shadow-soft transition-all duration-200"
+              placeholder="employee@company.com"
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="mobileNumber">Mobile Number *</Label>
+          <div className="relative">
+            <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+            <Input
+              id="mobileNumber"
+              value={formData.mobileNumber}
+              onChange={(e) => onInputChange('mobileNumber', e.target.value)}
+              className="pl-9 shadow-card focus:shadow-soft transition-all duration-200"
+              placeholder="+1-555-0123"
+              required
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="emergencyContact">Emergency Contact</Label>
+          <div className="relative">
+            <Contact className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+            <Input
+              id="emergencyContact"
+              value={formData.emergencyContact}
+              onChange={(e) => onInputChange('emergencyContact', e.target.value)}
+              className="pl-9 shadow-card focus:shadow-soft transition-all duration-200"
+              placeholder="+1-555-0124"
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="bloodGroup">Blood Group</Label>
+          <Select value={formData.bloodGroup} onValueChange={(value) => onInputChange('bloodGroup', value)}>
+            <SelectTrigger className="shadow-card focus:shadow-soft">
+              <div className="flex items-center">
+                <Heart className="h-4 w-4 mr-2 text-muted-foreground" />
+                <SelectValue placeholder="Select blood group" />
+              </div>
+            </SelectTrigger>
+            <SelectContent>
+              {bloodGroups.map(group => (
+                <SelectItem key={group} value={group}>{group}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="maritalStatus">Marital Status</Label>
+          <Select value={formData.maritalStatus} onValueChange={(value) => onInputChange('maritalStatus', value)}>
+            <SelectTrigger className="shadow-card focus:shadow-soft">
+              <SelectValue placeholder="Select marital status" />
+            </SelectTrigger>
+            <SelectContent>
+              {maritalStatuses.map(status => (
+                <SelectItem key={status} value={status}>{status}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="md:col-span-2 space-y-2">
+          <Label htmlFor="address">Address</Label>
+          <div className="relative">
+            <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+            <Textarea
+              id="address"
+              value={formData.address}
+              onChange={(e) => onInputChange('address', e.target.value)}
+              className="pl-9 shadow-card focus:shadow-soft transition-all duration-200 min-h-[80px]"
+              placeholder="Enter complete address"
+            />
+          </div>
+        </div>
+      </div>
+    </TabsContent>
+
+    <TabsContent value="professional" className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="employeeCode">Employee Code *</Label>
+          <Input
+            id="employeeCode"
+            value={formData.employeeCode}
+            onChange={(e) => onInputChange('employeeCode', e.target.value)}
+            className="shadow-card focus:shadow-soft transition-all duration-200 font-mono"
+            placeholder="EMP001"
+            required
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="dateOfJoining">Date of Joining *</Label>
+          <div className="relative">
+            <Calendar className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+            <Input
+              id="dateOfJoining"
+              type="date"
+              value={formData.dateOfJoining}
+              onChange={(e) => onInputChange('dateOfJoining', e.target.value)}
+              className="pl-9 shadow-card focus:shadow-soft transition-all duration-200"
+              required
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="department">Department</Label>
+          <Select value={formData.department} onValueChange={(value) => onInputChange('department', value)}>
+            <SelectTrigger className="shadow-card focus:shadow-soft">
+              <div className="flex items-center">
+                <Building className="h-4 w-4 mr-2 text-muted-foreground" />
+                <SelectValue placeholder="Select department" />
+              </div>
+            </SelectTrigger>
+            <SelectContent>
+              {departments.map(dept => (
+                <SelectItem key={dept} value={dept}>{dept}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="position">Position</Label>
+          <div className="relative">
+            <Shield className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+            <Input
+              id="position"
+              value={formData.position}
+              onChange={(e) => onInputChange('position', e.target.value)}
+              className="pl-9 shadow-card focus:shadow-soft transition-all duration-200"
+              placeholder="Job title"
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="salary">Salary</Label>
+          <div className="relative">
+            <DollarSign className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+            <Input
+              id="salary"
+              type="number"
+              value={formData.salary || ''}
+              onChange={(e) => onInputChange('salary', Number(e.target.value))}
+              className="pl-9 shadow-card focus:shadow-soft transition-all duration-200"
+              placeholder="Annual salary"
+            />
+          </div>
+        </div>
+      </div>
+    </TabsContent>
+
+    <TabsContent value="additional" className="space-y-4">
+      <div className="text-center text-muted-foreground py-8">
+        <Shield className="h-12 w-12 mx-auto mb-4 opacity-50" />
+        <p>Additional fields can be configured here</p>
+        <p className="text-sm">Custom fields, documents, certifications, etc.</p>
+      </div>
+    </TabsContent>
+  </Tabs>
+);
+
 interface EmployeeFormProps {
   employee?: Employee;
   onSave: () => void;
@@ -150,271 +426,6 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ employee, onSave, onCancel 
   const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
   const maritalStatuses = ['Single', 'Married', 'Divorced', 'Widowed'];
 
-  const BasicLayout = () => (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="name">Full Name *</Label>
-          <div className="relative">
-            <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-            <Input
-              id="name"
-              value={formData.name}
-              onChange={(e) => handleInputChange('name', e.target.value)}
-              className="pl-9 shadow-card focus:shadow-soft transition-all duration-200"
-              placeholder="Enter full name"
-              required
-            />
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="employeeCode">Employee Code *</Label>
-          <Input
-            id="employeeCode"
-            value={formData.employeeCode}
-            onChange={(e) => handleInputChange('employeeCode', e.target.value)}
-            className="shadow-card focus:shadow-soft transition-all duration-200 font-mono"
-            placeholder="EMP001"
-            required
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="dateOfJoining">Date of Joining *</Label>
-          <div className="relative">
-            <Calendar className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-            <Input
-              id="dateOfJoining"
-              type="date"
-              value={formData.dateOfJoining}
-              onChange={(e) => handleInputChange('dateOfJoining', e.target.value)}
-              className="pl-9 shadow-card focus:shadow-soft transition-all duration-200"
-              required
-            />
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="mobileNumber">Mobile Number *</Label>
-          <div className="relative">
-            <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-            <Input
-              id="mobileNumber"
-              value={formData.mobileNumber}
-              onChange={(e) => handleInputChange('mobileNumber', e.target.value)}
-              className="pl-9 shadow-card focus:shadow-soft transition-all duration-200"
-              placeholder="+1-555-0123"
-              required
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  const AdvancedLayout = () => (
-    <Tabs defaultValue="personal" className="space-y-6">
-      <TabsList className="grid w-full grid-cols-3">
-        <TabsTrigger value="personal">Personal Info</TabsTrigger>
-        <TabsTrigger value="professional">Professional</TabsTrigger>
-        <TabsTrigger value="additional">Additional</TabsTrigger>
-      </TabsList>
-
-      <TabsContent value="personal" className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">Full Name *</Label>
-            <div className="relative">
-              <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="name"
-                value={formData.name}
-                onChange={(e) => handleInputChange('name', e.target.value)}
-                className="pl-9 shadow-card focus:shadow-soft transition-all duration-200"
-                placeholder="Enter full name"
-                required
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="email">Email Address</Label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={(e) => handleInputChange('email', e.target.value)}
-                className="pl-9 shadow-card focus:shadow-soft transition-all duration-200"
-                placeholder="employee@company.com"
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="mobileNumber">Mobile Number *</Label>
-            <div className="relative">
-              <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="mobileNumber"
-                value={formData.mobileNumber}
-                onChange={(e) => handleInputChange('mobileNumber', e.target.value)}
-                className="pl-9 shadow-card focus:shadow-soft transition-all duration-200"
-                placeholder="+1-555-0123"
-                required
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="emergencyContact">Emergency Contact</Label>
-            <div className="relative">
-              <Contact className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="emergencyContact"
-                value={formData.emergencyContact}
-                onChange={(e) => handleInputChange('emergencyContact', e.target.value)}
-                className="pl-9 shadow-card focus:shadow-soft transition-all duration-200"
-                placeholder="+1-555-0124"
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="bloodGroup">Blood Group</Label>
-            <Select value={formData.bloodGroup} onValueChange={(value) => handleInputChange('bloodGroup', value)}>
-              <SelectTrigger className="shadow-card focus:shadow-soft">
-                <div className="flex items-center">
-                  <Heart className="h-4 w-4 mr-2 text-muted-foreground" />
-                  <SelectValue placeholder="Select blood group" />
-                </div>
-              </SelectTrigger>
-              <SelectContent>
-                {bloodGroups.map(group => (
-                  <SelectItem key={group} value={group}>{group}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="maritalStatus">Marital Status</Label>
-            <Select value={formData.maritalStatus} onValueChange={(value) => handleInputChange('maritalStatus', value)}>
-              <SelectTrigger className="shadow-card focus:shadow-soft">
-                <SelectValue placeholder="Select marital status" />
-              </SelectTrigger>
-              <SelectContent>
-                {maritalStatuses.map(status => (
-                  <SelectItem key={status} value={status}>{status}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="md:col-span-2 space-y-2">
-            <Label htmlFor="address">Address</Label>
-            <div className="relative">
-              <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Textarea
-                id="address"
-                value={formData.address}
-                onChange={(e) => handleInputChange('address', e.target.value)}
-                className="pl-9 shadow-card focus:shadow-soft transition-all duration-200 min-h-[80px]"
-                placeholder="Enter complete address"
-              />
-            </div>
-          </div>
-        </div>
-      </TabsContent>
-
-      <TabsContent value="professional" className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="employeeCode">Employee Code *</Label>
-            <Input
-              id="employeeCode"
-              value={formData.employeeCode}
-              onChange={(e) => handleInputChange('employeeCode', e.target.value)}
-              className="shadow-card focus:shadow-soft transition-all duration-200 font-mono"
-              placeholder="EMP001"
-              required
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="dateOfJoining">Date of Joining *</Label>
-            <div className="relative">
-              <Calendar className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="dateOfJoining"
-                type="date"
-                value={formData.dateOfJoining}
-                onChange={(e) => handleInputChange('dateOfJoining', e.target.value)}
-                className="pl-9 shadow-card focus:shadow-soft transition-all duration-200"
-                required
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="department">Department</Label>
-            <Select value={formData.department} onValueChange={(value) => handleInputChange('department', value)}>
-              <SelectTrigger className="shadow-card focus:shadow-soft">
-                <div className="flex items-center">
-                  <Building className="h-4 w-4 mr-2 text-muted-foreground" />
-                  <SelectValue placeholder="Select department" />
-                </div>
-              </SelectTrigger>
-              <SelectContent>
-                {departments.map(dept => (
-                  <SelectItem key={dept} value={dept}>{dept}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="position">Position</Label>
-            <div className="relative">
-              <Shield className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="position"
-                value={formData.position}
-                onChange={(e) => handleInputChange('position', e.target.value)}
-                className="pl-9 shadow-card focus:shadow-soft transition-all duration-200"
-                placeholder="Job title"
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="salary">Salary</Label>
-            <div className="relative">
-              <DollarSign className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="salary"
-                type="number"
-                value={formData.salary || ''}
-                onChange={(e) => handleInputChange('salary', Number(e.target.value))}
-                className="pl-9 shadow-card focus:shadow-soft transition-all duration-200"
-                placeholder="Annual salary"
-              />
-            </div>
-          </div>
-        </div>
-      </TabsContent>
-
-      <TabsContent value="additional" className="space-y-4">
-        <div className="text-center text-muted-foreground py-8">
-          <Shield className="h-12 w-12 mx-auto mb-4 opacity-50" />
-          <p>Additional fields can be configured here</p>
-          <p className="text-sm">Custom fields, documents, certifications, etc.</p>
-        </div>
-      </TabsContent>
-    </Tabs>
-  );
 
   return (
     <div className="min-h-screen bg-gradient-background p-6">
@@ -468,7 +479,20 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ employee, onSave, onCancel 
         <Card className="shadow-card border-0 bg-gradient-card">
           <CardContent className="p-6">
             <form onSubmit={handleSubmit} className="space-y-6">
-              {layoutMode === 'basic' ? <BasicLayout /> : <AdvancedLayout />}
+              {layoutMode === 'basic' ? (
+                <BasicLayout 
+                  formData={formData} 
+                  onInputChange={handleInputChange} 
+                />
+              ) : (
+                <AdvancedLayout 
+                  formData={formData} 
+                  onInputChange={handleInputChange}
+                  departments={departments}
+                  bloodGroups={bloodGroups}
+                  maritalStatuses={maritalStatuses}
+                />
+              )}
               
               <div className="flex justify-end space-x-4 pt-6 border-t border-border">
                 <Button type="button" variant="outline" onClick={onCancel}>
