@@ -1,18 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-interface User {
-  username: string;
-  name: string;
-}
-
-interface AuthContextType {
-  user: User | null;
-  login: (username: string, password: string, rememberMe: boolean) => boolean;
-  logout: () => void;
-  isAuthenticated: boolean;
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext();
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -22,8 +10,8 @@ export const useAuth = () => {
   return context;
 };
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('rememberedUser');
@@ -32,7 +20,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  const login = (username: string, password: string, rememberMe: boolean): boolean => {
+  const login = (username, password, rememberMe) => {
     // Mock authentication - in real app, this would call an API
     if (username === 'admin' && password === 'password') {
       const userData = { username, name: 'Administrator' };

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Employee, EmployeeFormData } from '@/types/Employee';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -32,10 +31,7 @@ import {
 import { useToast } from '@/hooks/use-toast';
 
 // Move layout components outside to prevent re-creation
-const BasicLayout: React.FC<{
-  formData: EmployeeFormData;
-  onInputChange: (field: keyof EmployeeFormData, value: string | number) => void;
-}> = ({ formData, onInputChange }) => (
+const BasicLayout = ({ formData, onInputChange }) => (
   <div className="space-y-6">
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div className="space-y-2">
@@ -98,13 +94,7 @@ const BasicLayout: React.FC<{
   </div>
 );
 
-const AdvancedLayout: React.FC<{
-  formData: EmployeeFormData;
-  onInputChange: (field: keyof EmployeeFormData, value: string | number) => void;
-  departments: string[];
-  bloodGroups: string[];
-  maritalStatuses: string[];
-}> = ({ formData, onInputChange, departments, bloodGroups, maritalStatuses }) => (
+const AdvancedLayout = ({ formData, onInputChange, departments, bloodGroups, maritalStatuses }) => (
   <Tabs defaultValue="personal" className="space-y-6">
     <TabsList className="grid w-full grid-cols-3">
       <TabsTrigger value="personal">Personal Info</TabsTrigger>
@@ -307,14 +297,8 @@ const AdvancedLayout: React.FC<{
   </Tabs>
 );
 
-interface EmployeeFormProps {
-  employee?: Employee;
-  onSave: () => void;
-  onCancel: () => void;
-}
-
-const EmployeeForm: React.FC<EmployeeFormProps> = ({ employee, onSave, onCancel }) => {
-  const [formData, setFormData] = useState<EmployeeFormData>({
+const EmployeeForm = ({ employee, onSave, onCancel }) => {
+  const [formData, setFormData] = useState({
     name: '',
     dateOfJoining: '',
     employeeCode: '',
@@ -328,7 +312,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ employee, onSave, onCancel 
     bloodGroup: '',
     maritalStatus: ''
   });
-  const [layoutMode, setLayoutMode] = useState<'basic' | 'advanced'>('basic');
+  const [layoutMode, setLayoutMode] = useState('basic');
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
@@ -357,11 +341,11 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ employee, onSave, onCancel 
     }
   }, [employee]);
 
-  const handleInputChange = (field: keyof EmployeeFormData, value: string | number) => {
+  const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
@@ -373,7 +357,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ employee, onSave, onCancel 
       
       if (employee) {
         // Update existing employee
-        const updatedEmployees = existingEmployees.map((emp: Employee) =>
+        const updatedEmployees = existingEmployees.map((emp) =>
           emp.id === employee.id
             ? {
                 ...emp,
@@ -390,7 +374,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ employee, onSave, onCancel 
         });
       } else {
         // Create new employee
-        const newEmployee: Employee = {
+        const newEmployee = {
           id: Date.now().toString(),
           ...formData,
           createdBy: user?.username || 'admin',
@@ -425,7 +409,6 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({ employee, onSave, onCancel 
 
   const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
   const maritalStatuses = ['Single', 'Married', 'Divorced', 'Widowed'];
-
 
   return (
     <div className="min-h-screen bg-gradient-background p-6">

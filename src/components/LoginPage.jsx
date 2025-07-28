@@ -8,11 +8,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Eye, EyeOff, Users, Lock, User } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
-interface LoginPageProps {
-  onLogin: () => void;
-}
-
-const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
+const LoginPage = ({ onLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
@@ -29,7 +25,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
     }
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
@@ -123,7 +119,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                   <Checkbox
                     id="remember"
                     checked={rememberMe}
-                    onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+                    onCheckedChange={(checked) => setRememberMe(checked)}
                   />
                   <Label htmlFor="remember" className="text-sm">Remember username</Label>
                 </div>

@@ -3,13 +3,10 @@ import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import LoginPage from '@/components/LoginPage';
 import EmployeeList from '@/components/EmployeeList';
 import EmployeeForm from '@/components/EmployeeForm';
-import { Employee } from '@/types/Employee';
-
-type AppState = 'login' | 'list' | 'add' | 'edit';
 
 const AppContent = () => {
-  const [currentState, setCurrentState] = useState<AppState>('login');
-  const [selectedEmployee, setSelectedEmployee] = useState<Employee | undefined>();
+  const [currentState, setCurrentState] = useState('login');
+  const [selectedEmployee, setSelectedEmployee] = useState();
   const { isAuthenticated } = useAuth();
 
   React.useEffect(() => {
@@ -29,7 +26,7 @@ const AppContent = () => {
     setCurrentState('add');
   };
 
-  const handleEditEmployee = (employee: Employee) => {
+  const handleEditEmployee = (employee) => {
     setSelectedEmployee(employee);
     setCurrentState('edit');
   };

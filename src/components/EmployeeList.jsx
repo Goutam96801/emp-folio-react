@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Employee } from '@/types/Employee';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -36,18 +35,13 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
-interface EmployeeListProps {
-  onAddEmployee: () => void;
-  onEditEmployee: (employee: Employee) => void;
-}
-
-const EmployeeList: React.FC<EmployeeListProps> = ({ onAddEmployee, onEditEmployee }) => {
-  const [employees, setEmployees] = useState<Employee[]>([]);
-  const [filteredEmployees, setFilteredEmployees] = useState<Employee[]>([]);
+const EmployeeList = ({ onAddEmployee, onEditEmployee }) => {
+  const [employees, setEmployees] = useState([]);
+  const [filteredEmployees, setFilteredEmployees] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [deleteEmployee, setDeleteEmployee] = useState<Employee | null>(null);
-  const [sortField, setSortField] = useState<keyof Employee>('name');
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [deleteEmployee, setDeleteEmployee] = useState(null);
+  const [sortField, setSortField] = useState('name');
+  const [sortDirection, setSortDirection] = useState('asc');
   const { user, logout } = useAuth();
   const { toast } = useToast();
 
@@ -60,7 +54,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ onAddEmployee, onEditEmploy
       setFilteredEmployees(parsedEmployees);
     } else {
       // Initialize with some sample data
-      const sampleEmployees: Employee[] = [
+      const sampleEmployees = [
         {
           id: '1',
           name: 'John Doe',
@@ -119,7 +113,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ onAddEmployee, onEditEmploy
     setFilteredEmployees(filtered);
   }, [searchTerm, employees]);
 
-  const handleSort = (field: keyof Employee) => {
+  const handleSort = (field) => {
     const direction = sortField === field && sortDirection === 'asc' ? 'desc' : 'asc';
     setSortField(field);
     setSortDirection(direction);
@@ -138,7 +132,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ onAddEmployee, onEditEmploy
     setFilteredEmployees(sorted);
   };
 
-  const handleDeleteEmployee = (employee: Employee) => {
+  const handleDeleteEmployee = (employee) => {
     setDeleteEmployee(employee);
   };
 
@@ -156,7 +150,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({ onAddEmployee, onEditEmploy
     }
   };
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
